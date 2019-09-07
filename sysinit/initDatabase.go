@@ -1,7 +1,7 @@
 package sysinit
 
 import (
-	_ "github.com/lhtzbj12/sdrms/models"
+	_ "github.com/tbf1211/sdrms/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
