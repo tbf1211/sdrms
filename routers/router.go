@@ -62,4 +62,11 @@ func init() {
 
 	beego.Router("/", &controllers.HomeController{}, "*:Index")
 
+	//最高院司法观点
+	beego.Router("/judicial-point/index", &controllers.JudicialPointController{}, "*:Index")
+	beego.Router("/judicial-point/datagrid", &controllers.JudicialPointController{}, "POST:DataGrid")
+	beego.Router("/judicial-point/edit/?:id", &controllers.JudicialPointController{}, "Get,Post:Edit")
+
+
+
 }

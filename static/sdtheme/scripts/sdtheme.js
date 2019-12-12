@@ -30,9 +30,9 @@ var sdtheme = function () {
     }
     showenable = function (val) {
       if (val === 1 || val === "1") {
-          return '<label class="label label-success label-sm"><i class="fa fa-check"></i> 启用</label>';
+          return '<label class="label label-success label-sm"><i class="fa fa-check"></i> 显示</label>';
       } else if (val === 0 || val === "0") {
-          return '<label class="label label-danger label-sm"><i class="fa fa-ban"></i> 禁用</label>';
+          return '<label class="label label-danger label-sm"><i class="fa fa-ban"></i> 隐藏</label>';
       } else if (val === -1 || val === "-1")
           return '<label class="label label-info label-sm"><i class="fa fa-trash"></i> 删除</label>';
       else {
@@ -44,6 +44,15 @@ var sdtheme = function () {
             return '<label class="label label-primary label-sm"><i class="fa fa-check"></i> 是</label>';
         } else if (val === 0 || val === "0" || val === false) {
             return '<label class="label label-danger label-sm"><i class="fa fa-close"></i> 否</label>';
+        } else {
+            return "";
+        }
+    }
+    showLanguage = function (val) {
+        if (val === 1 || val === "1" || val === true) {
+            return '<label class="label label-primary label-sm"><i class="fa fa-comment-o"></i> 英文</label>';
+        } else if (val === 0 || val === "0" || val === false) {
+            return '<label class="label label-success label-sm"><i class="fa fa-comment"></i> 中文</label>';
         } else {
             return "";
         }
@@ -370,10 +379,12 @@ var sdtheme = function () {
         showenable: showenable,
         //显示是否
         showyes: showyes,
+        //显示语言
+        showLanguage: showLanguage,
         //显示枚举
         showenum: showenum,
         //显示时间
-        showDateTime,
+        showDateTime: showDateTime(),
         //保存form里的查询条件
         saveSearchText: saveSearchText,
         //加载form查询条件

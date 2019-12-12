@@ -7,7 +7,14 @@ import (
 
 // init 初始化
 func init() {
-	orm.RegisterModel(new(Course), new(BackendUser), new(Resource), new(Role), new(RoleResourceRel), new(RoleBackendUserRel))
+	orm.RegisterModel(
+		new(Course),
+		new(BackendUser),
+		new(ExNews),
+		new(Resource),
+		new(Role),
+		new(RoleResourceRel),
+		new(RoleBackendUserRel))
 }
 
 // TableName 下面是统一的表名管理
@@ -19,6 +26,11 @@ func TableName(name string) string {
 // BackendUserTBName 获取 BackendUser 对应的表名称
 func BackendUserTBName() string {
 	return TableName("backend_user")
+}
+
+// BackendUserTBName 获取 ExNews 对应的表名称
+func ExNewsTBName() string {
+	return TableName("ex_news")
 }
 
 // ResourceTBName 获取 Resource 对应的表名称

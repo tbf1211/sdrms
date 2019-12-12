@@ -2,22 +2,18 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
-	"strconv"
-	"strings"
-
+	"github.com/astaxie/beego/orm"
 	"github.com/tbf1211/sdrms/enums"
 	"github.com/tbf1211/sdrms/models"
 	"github.com/tbf1211/sdrms/utils"
-
-	"github.com/astaxie/beego/orm"
+	"strings"
 )
 
-type BackendUserController struct {
+type JudicialPointController struct {
 	BaseController
 }
 
-func (c *BackendUserController) Prepare() {
+func (c *JudicialPointController) Prepare() {
 	//先执行
 	c.BaseController.Prepare()
 	//如果一个Controller的多数Action都需要权限控制，则将验证放到Prepare
@@ -27,27 +23,27 @@ func (c *BackendUserController) Prepare() {
 	//c.checkLogin()
 
 }
-func (c *BackendUserController) Index() {
+func (c *JudicialPointController) Index() {
 	//是否显示更多查询条件的按钮弃用，前端自动判断
 	//c.Data["showMoreQuery"] = true
 	//将页面左边菜单的某项激活
 	c.Data["activeSidebarUrl"] = c.URLFor(c.controllerName + "." + c.actionName)
 	//页面模板设置
-	c.setTpl()
+	c.setTpl("judicial-point/index.html")
 	c.LayoutSections = make(map[string]string)
-	c.LayoutSections["headcssjs"] = "backenduser/index_headcssjs.html"
-	c.LayoutSections["footerjs"] = "backenduser/index_footerjs.html"
+	c.LayoutSections["headcssjs"] = "judicial-point/index_headcssjs.html"
+	c.LayoutSections["footerjs"] = "judicial-point/index_footerjs.html"
 	//页面里按钮权限控制
-	c.Data["canEdit"] = c.checkActionAuthor("BackendUserController", "Edit")
-	c.Data["canDelete"] = c.checkActionAuthor("BackendUserController", "Delete")
-	c.Data["tbf"] = "fuck me"
+	c.Data["canEdit"] = c.checkActionAuthor("JudicialPointController", "Edit")
+	c.Data["canDelete"] = c.checkActionAuthor("JudicialPointController", "Delete")
 }
-func (c *BackendUserController) DataGrid() {
+
+func (c *JudicialPointController) DataGrid() {
 	//直接反序化获取json格式的requestbody里的值（要求配置文件里 copyrequestbody=true）
-	var params models.BackendUserQueryParam
+	var params models.ExNewsQueryParam
 	json.Unmarshal(c.Ctx.Input.RequestBody, &params)
 	//获取数据列表和总数
-	data, total := models.BackendUserPageList(&params)
+	data, total := models.ExNewsPageList(&params)
 	//定义返回的数据结构
 	result := make(map[string]interface{})
 	result["total"] = total
@@ -57,37 +53,37 @@ func (c *BackendUserController) DataGrid() {
 }
 
 // Edit 添加 编辑 页面
-func (c *BackendUserController) Edit() {
+func (c *JudicialPointController) Edit() {
 	//如果是Post请求，则由Save处理
 	if c.Ctx.Request.Method == "POST" {
 		c.Save()
 	}
 	Id, _ := c.GetInt(":id", 0)
-	m := &models.BackendUser{}
+	m := &models.ExNews{}
 	var err error
 	if Id > 0 {
-		m, err = models.BackendUserOne(Id)
+		m, err = models.ExNewsOne(Id)
 		if err != nil {
 			c.pageError("数据无效，请刷新后重试")
 		}
-		o := orm.NewOrm()
-		o.LoadRelated(m, "RoleBackendUserRel")
 	} else {
 		//添加用户时默认状态为启用
-		m.Status = enums.Enabled
+		m.IsDisplay = enums.Enabled
 	}
 	c.Data["m"] = m
 	//获取关联的roleId列表
-	var roleIds []string
-	for _, item := range m.RoleBackendUserRel {
-		roleIds = append(roleIds, strconv.Itoa(item.Role.Id))
-	}
-	c.Data["roles"] = strings.Join(roleIds, ",")
-	c.setTpl("backenduser/edit.html", "shared/layout_pullbox.html")
+	//var roleIds []string
+	//for _, item := range m.RoleBackendUserRel {
+	//	roleIds = append(roleIds, strconv.Itoa(item.Role.Id))
+	//}
+	//c.Data["roles"] = strings.Join(roleIds, ",")
+	c.setTpl("judicial-point/edit.html")
 	c.LayoutSections = make(map[string]string)
-	c.LayoutSections["footerjs"] = "backenduser/edit_footerjs.html"
+	c.LayoutSections["headcssjs"] = "judicial-point/index_headcssjs.html"
+	c.LayoutSections["footerjs"] = "judicial-point/edit_footerjs.html"
 }
-func (c *BackendUserController) Save() {
+
+func (c *JudicialPointController) Save() {
 	m := models.BackendUser{}
 	o := orm.NewOrm()
 	var err error
@@ -139,20 +135,5 @@ func (c *BackendUserController) Save() {
 		}
 	} else {
 		c.jsonResult(enums.JRCodeSucc, "保存成功", m.Id)
-	}
-}
-func (c *BackendUserController) Delete() {
-	strs := c.GetString("ids")
-	ids := make([]int, 0, len(strs))
-	for _, str := range strings.Split(strs, ",") {
-		if id, err := strconv.Atoi(str); err == nil {
-			ids = append(ids, id)
-		}
-	}
-	query := orm.NewOrm().QueryTable(models.BackendUserTBName())
-	if num, err := query.Filter("id__in", ids).Delete(); err == nil {
-		c.jsonResult(enums.JRCodeSucc, fmt.Sprintf("成功删除 %d 项", num), 0)
-	} else {
-		c.jsonResult(enums.JRCodeFailed, "删除失败", 0)
 	}
 }
