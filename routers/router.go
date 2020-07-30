@@ -66,6 +66,8 @@ func init() {
 	beego.Router("/judicial-point/index", &controllers.JudicialPointController{}, "*:Index")
 	beego.Router("/judicial-point/datagrid", &controllers.JudicialPointController{}, "POST:DataGrid")
 	beego.Router("/judicial-point/edit/?:id", &controllers.JudicialPointController{}, "Get,Post:Edit")
+	beego.Router("/judicial-point/delete/?:id", &controllers.JudicialPointController{}, "Get,Post:Delete")
+
 
 
 

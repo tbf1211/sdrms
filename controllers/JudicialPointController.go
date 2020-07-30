@@ -83,6 +83,11 @@ func (c *JudicialPointController) Edit() {
 	c.LayoutSections["footerjs"] = "judicial-point/edit_footerjs.html"
 }
 
+// Delete 添加 编辑 页面
+func (c *JudicialPointController) Delete() {
+
+}
+
 func (c *JudicialPointController) Save() {
 	m := models.BackendUser{}
 	o := orm.NewOrm()
