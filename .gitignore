@@ -28,3 +28,4 @@ sdrms
 /logs/*.log
 /debug
 /sdrms
+/.vscode
